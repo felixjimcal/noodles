@@ -4,6 +4,8 @@ const express = require("express");
 const app = express();
 
 // Settings 
+// Si existe un puerto, usalo, sino usa el 3000
+app.set("port", process.env.PORT || 3000);
 
 // Middlewares (Funciones que seran ejecutadas antes de llegar al servidor, Hooks al fin y al cabo
 
@@ -17,3 +19,6 @@ const app = express();
 
 
 // Server listenning
+app.listen(app.get("port"), () =>{
+    console.log("Server on port: ", app.get("port"))
+});
