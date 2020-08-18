@@ -7,6 +7,7 @@ const { dirname } = require("path");
 
 // Initializations
 const app = express();
+require("./database");
 
 // ---------------------------------------------------------------
 // Settings 
