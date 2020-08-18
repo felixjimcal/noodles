@@ -1,11 +1,11 @@
 const router = require("express").Router(); // facilitar creacion rutas
 
 router.get("/users/signin", (req, res) => {
-    res.send("SignIn");
+    res.render("./users/signin");
 });
 
 router.get("/users/signup", (req, res) => {
-    res.send("SignUp");
+    res.render("./users/signup");
 });
 
 module.exports = router;
