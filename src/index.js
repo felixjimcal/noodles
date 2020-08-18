@@ -1,6 +1,8 @@
 const express = require("express");
 const path = require("path");
 const exphbs = require("express-handlebars");
+const methodOverride = require("method-override");
+const session = require("express-session")
 
 // Initializations
 const app = express();
@@ -25,6 +27,13 @@ app.engine(".hbs", exphbs({
 app.set("view engine", "hbs");
 // ---------------------------------------------------------------
 // Middlewares (Funciones que seran ejecutadas antes de llegar al servidor, Hooks al fin y al cabo
+app.use(express.urlencoded({extended: false})); // recivir info de los forumarios, extended false = sin imagenes
+app.use(methodOverride("method")); // para poder mandar PUT, DELETE en los forms
+app.use(session({ // para autenticar usuario y almacenar temporalmente
+    secret: "mysecretapp", 
+    resave: true,
+    saveUninitialized: true
+}));
 
 // ---------------------------------------------------------------
 // Global varaibles
