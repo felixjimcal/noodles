@@ -5,8 +5,26 @@ router.get("/notes/add", (req, res) => {
 });
 
 router.post("/notes/add", (req, res) => {
-    console.log(req.body);
-    res.send("ok");
+    const { title, description } = req.body;
+    const errors_form = [];
+
+    if (!title) {
+        errors_form.push({ text: "Write a title, please" });
+    }
+
+    if (!description) {
+        errors_form.push({ text: "Write a description, please" });
+    }
+
+    if (errors_form.length > 0) {
+        res.render("notes/add", {
+            errors: errors_form,
+            title,
+            description
+        });
+    } else {
+        res.send("ok");
+    }
 });
 
 router.get("/notes", (req, res) => {
