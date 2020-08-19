@@ -1,10 +1,15 @@
 const router = require("express").Router(); // facilitar creacion rutas
 
+// ------------------------------------------------------
 router.get("/notes/add", (req, res) => {
     res.render("./notes/add.hbs");
 });
 
-router.post("/notes/add", (req, res) => {
+
+// ------------------------------------------------------
+const Note = require("../models/Note");
+
+router.post("/notes/add", async (req, res) => {
     const { title, description } = req.body;
     const errors_form = [];
 
@@ -23,10 +28,13 @@ router.post("/notes/add", (req, res) => {
             description
         });
     } else {
-        res.send("ok");
+        const newNote = new Note({title, description});
+        await newNote.save();
+        res.redirect("/notes");
     }
 });
 
+// ------------------------------------------------------
 router.get("/notes", (req, res) => {
     res.send("notas");
 });
