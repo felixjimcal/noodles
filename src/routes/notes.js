@@ -9,7 +9,7 @@ router.get("/notes/add", (req, res) => {
 // ------------------------------------------------------
 const Note = require("../models/Note");
 
-router.post("/notes/add", async (req, res) => {
+router.post("/notes/add", async(req, res) => { // async para indicar proceso asincrono
     const { title, description } = req.body;
     const errors_form = [];
 
@@ -28,16 +28,29 @@ router.post("/notes/add", async (req, res) => {
             description
         });
     } else {
-        const newNote = new Note({title, description});
-        await newNote.save();
+        const newNote = new Note({ title, description });
+        await newNote.save(); // await para indicar proceso asincrono
         res.redirect("/notes");
     }
 });
 
 // ------------------------------------------------------
-router.get("/notes", (req, res) => {
-    res.send("notas");
-});
+router.get('/notes', async(req, res) => {
+    await Note.find().sort({ date: "desc" })
+        .then(documentos => {
+            const contexto = {
+                notes: documentos.map(documento => {
+                    return {
+                        title: documento.title,
+                        description: documento.description
+                    }
+                })
+            }
+            res.render('notes/all_notes', {
+                notes: contexto.notes
+            })
+        })
+})
 
 
 module.exports = router;
