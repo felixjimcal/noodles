@@ -5,7 +5,6 @@ router.get("/notes/add", (req, res) => {
     res.render("./notes/add.hbs");
 });
 
-
 // ------------------------------------------------------
 const Note = require("../models/Note");
 
@@ -30,6 +29,7 @@ router.post("/notes/add", async (req, res) => { // async para indicar proceso as
     } else {
         const newNote = new Note({ title, description });
         await newNote.save(); // await para indicar proceso asincrono
+        req.flash('success_msg', 'Note added successfuly');
         res.redirect("/notes");
     }
 });
@@ -53,19 +53,24 @@ router.get('/notes', async (req, res) => {
         })
 });
 
+// ------------------------------------------------------
 router.get("/notes/edit/:id", async (req, res) => {
     const note = await (await Note.findById(req.params.id)).toJSON();
     res.render("notes/edit.hbs", { note })
 });
 
+// ------------------------------------------------------
 router.put("/notes/edit/:id", async (req, res) => {
     const { title, description } = req.body;
-    await Note.findByIdAndUpdate(req.params.id, { title, description});
+    await Note.findByIdAndUpdate(req.params.id, { title, description });
+    req.flash('success_msg', 'Note updated successfully')
     res.redirect("/notes");
 });
 
+// ------------------------------------------------------
 router.delete("/notes/delete/:id", async (req, res) => {
     await Note.findByIdAndDelete(req.params.id);
+    req.flash('success_msg', 'Note deleted successfully')
     res.redirect("/notes");
 });
 

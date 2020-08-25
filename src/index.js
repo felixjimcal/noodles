@@ -3,7 +3,7 @@ const path = require("path");
 const exphbs = require("express-handlebars");
 const methodOverride = require("method-override");
 const session = require("express-session");
-const { dirname } = require("path");
+const flash = require("connect-flash"); // send message between multiple views
 
 // Initializations
 const app = express();
@@ -28,18 +28,30 @@ app.engine(".hbs", exphbs({
 // aplicar la configuracion superior
 app.set("view engine", "hbs");
 // ---------------------------------------------------------------
-// Middlewares (Funciones que seran ejecutadas antes de llegar al servidor, Hooks al fin y al cabo
-app.use(express.urlencoded({extended: false})); // recivir info de los forumarios, extended false = sin imagenes
+// Middlewares 
+// (Funciones que seran ejecutadas antes de llegar al servidor, Hooks al fin y al cabo
+app.use(express.urlencoded({ extended: false })); // recivir info de los forumarios, extended false = sin imagenes
 app.use(methodOverride("_method")); // para poder mandar PUT, DELETE en los forms
 app.use(session({ // para autenticar usuario y almacenar temporalmente
-    secret: "mysecretapp", 
+    secret: "mysecretapp",
     resave: true,
     saveUninitialized: true
 }));
 
+app.use(flash());
+
 // ---------------------------------------------------------------
 // Global varaibles
+app.use((req, res, next) => {
+    // almacena mensajes que sean succes_msg a traves de las vistas
+    res.locals.success_msg = req.flash('success_msg');
+    res.locals.error_msg = req.flash('error_msg');
 
+
+    // nodejs es de un solo thread, asi que indicamos next para 
+    // continuar con la lista de tareas 
+    next();
+});
 
 // ---------------------------------------------------------------
 // Routes
@@ -53,6 +65,6 @@ app.use(express.static(path.join(__dirname, "public"))); // path public
 
 // ---------------------------------------------------------------
 // Server listenning
-app.listen(app.get("port"), () =>{
+app.listen(app.get("port"), () => {
     console.log("Server on port: ", app.get("port"))
 });
