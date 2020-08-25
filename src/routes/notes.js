@@ -9,7 +9,7 @@ router.get("/notes/add", (req, res) => {
 // ------------------------------------------------------
 const Note = require("../models/Note");
 
-router.post("/notes/add", async(req, res) => { // async para indicar proceso asincrono
+router.post("/notes/add", async (req, res) => { // async para indicar proceso asincrono
     const { title, description } = req.body;
     const errors_form = [];
 
@@ -35,12 +35,13 @@ router.post("/notes/add", async(req, res) => { // async para indicar proceso asi
 });
 
 // ------------------------------------------------------
-router.get('/notes', async(req, res) => {
+router.get('/notes', async (req, res) => {
     await Note.find().sort({ date: "desc" })
         .then(documentos => {
             const contexto = {
                 notes: documentos.map(documento => {
                     return {
+                        id: documento._id,
                         title: documento.title,
                         description: documento.description
                     }
@@ -50,7 +51,22 @@ router.get('/notes', async(req, res) => {
                 notes: contexto.notes
             })
         })
-})
+});
 
+router.get("/notes/edit/:id", async (req, res) => {
+    const note = await (await Note.findById(req.params.id)).toJSON();
+    res.render("notes/edit.hbs", { note })
+});
+
+router.put("/notes/edit/:id", async (req, res) => {
+    const { title, description } = req.body;
+    await Note.findByIdAndUpdate(req.params.id, { title, description});
+    res.redirect("/notes");
+});
+
+router.delete("/notes/delete/:id", async (req, res) => {
+    await Note.findByIdAndDelete(req.params.id);
+    res.redirect("/notes");
+});
 
 module.exports = router;
