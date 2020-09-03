@@ -1,13 +1,13 @@
 const router = require("express").Router(); // facilitar creacion rutas
 
+const Note = require("../models/Note");
+
 // ------------------------------------------------------
 router.get("/notes/add", (req, res) => {
     res.render("./notes/add.hbs");
 });
 
 // ------------------------------------------------------
-const Note = require("../models/Note");
-
 router.post("/notes/add", async (req, res) => { // async para indicar proceso asincrono
     const { title, description } = req.body;
     const errors_form = [];
